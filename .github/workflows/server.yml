@@ -34,7 +34,7 @@ jobs:
         run: npm run build --if-present
         working-directory: ./server
 
-      - name: Send custom JSON data to Slack workflow (Slack notifications) # Slack notification channel information about build status
+      - name: Send custom JSON data to Slack workflow (Slack notifications)
         id: slack
         uses: slackapi/slack-github-action@v1.18.0
         with:
