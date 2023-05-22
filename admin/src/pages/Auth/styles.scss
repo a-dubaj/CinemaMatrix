@@ -1,0 +1,22 @@
+#cover {
+  background: #222;
+  background-size: cover;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  position: relative;
+  box-shadow: inset 0 0 500px 100px #000000;
+}
+
+#cover-caption {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.button-default {
+  width: 120px;
+  background-color: #ff0000 !important;
+  border-color: #ff0000 !important;
+}

@@ -1,0 +1,60 @@
+name: 🐧 [Frontend] Admin CI build
+on: push
+jobs:
+  build:
+    runs-on: [ self-hosted, linux ] # Self-hosted service
+    strategy:
+      matrix:
+        node-version: [ 16.x ]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: ./admin/package-lock.json
+
+      - name: Cache verify
+        run: npm cache verify
+
+      - name: Clean dependencies      # Clean cache
+        run: npm cache clean --force
+
+      - name: Install dependencies
+        run: |
+          if [ -e package-lock.json ]; then
+            npm install --frozen-lockfile
+          elif [ -e package-lock.json ]; then
+            npm ci
+          else
+            npm i --force
+          fi
+        working-directory: ./admin
+
+      - name: Running build
+        run: CI=false npm run build --if-present
+        working-directory: ./admin
+
+      - name: Send custom JSON data to Slack workflow (Slack notifications) # Slack notification channel information about build status
+        id: slack
+        uses: slackapi/slack-github-action@v1.18.0
+        with:
+          payload: |
+            {
+               "text": ":ghost: *admin* build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":ghost: *admin* build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
