@@ -3,8 +3,8 @@
 The purpose of this project was the implementation of a system supporting cinema 
 service, enabling: 
 - the purchase of tickets, 
-- booking a film show, creating a 
-- customer account, 
+- booking a film show, 
+- creating a customer account, 
 - managing rooms, 
 - managing the repertoire of a given cinema, and introducing new films. 
 
